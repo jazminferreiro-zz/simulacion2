@@ -137,7 +137,7 @@ class Web_service:
 
 
 if __name__ == '__main__':
-	cant = 100
+	cant = 100000
 	exp = Exponential_distribution(4)
 	l = exp.generate_list(cant)
 	prev = 0
