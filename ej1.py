@@ -45,7 +45,6 @@ class Web_service:
 		no_wait1 = 0
 		for t in request_times1:
 			if(t.get_wait_duration() == 0):
-				print "no se espera"
 				no_wait1 += 1
 			total_wait_duration1 += t.get_wait_duration()
 			#tiempo en fila + tiempo de procesamiento
@@ -53,7 +52,7 @@ class Web_service:
 
 		avarage_wait1 = total_wait_duration1/len(request_times1)
 		avarage_duration1 = total_duration1/len(request_times1)
-		no_wait1 = (no_wait1/len(request_times1))*100
+		no_wait1 = ((no_wait1+0.0)/len(request_times1))
 
 
 		total_wait_duration2 =0
@@ -62,7 +61,6 @@ class Web_service:
 		no_wait2 = 0
 		for t in request_times2:
 			if(t.get_wait_duration() == 0):
-				print "no se espera"
 				no_wait2 += 1
 			total_wait_duration2 += t.get_wait_duration()
 			#tiempo en fila + tiempo de procesamiento
@@ -71,7 +69,7 @@ class Web_service:
 
 		avarage_wait2 = total_wait_duration2/len(request_times2)
 		avarage_duration2 =total_duration2/len(request_times2)
-		no_wait2 = (no_wait2/len(request_times2))*100
+		no_wait2 = ((no_wait2+0.0)/len(request_times2))
 
 		print "\nTiempo medio de espera entre que la solicitud llega y puede ser procesada: "
 		print "opvion 1 (dos bases)  = %f \nopcion 2 (una base) = %f"  %(avarage_wait1, avarage_wait2)
