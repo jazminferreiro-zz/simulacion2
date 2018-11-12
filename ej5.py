@@ -1,8 +1,7 @@
+import matplotlib.pyplot as plt
 import random
 import simpy
 import numpy
-
-
 
 
 class Granja(object):
@@ -12,7 +11,7 @@ class Granja(object):
         self.servers = [simpy.Resource(env) for x in range(count)]
         self.server_selection = server_selection
         self.rr = 0
-        self.queue_sizes = {}
+        self.queue_sizes = []
         self.waitting_times = []
 
     def attend(self, request):
@@ -35,7 +34,7 @@ class Granja(object):
         all_sizes = 0
         for x in self.servers:
             all_sizes += len(x.queue)
-        self.queue_sizes[self.env.now] = all_sizes
+        self.queue_sizes.append((self.env.now,all_sizes))
 
 
     def select_server_option1(self):
@@ -54,8 +53,32 @@ class Granja(object):
             self.rr = 0
         return self.servers[self.rr]
 
+    def get_sum_wait_time(self):
+        return numpy.sum(self.waitting_times)
+
     def get_avarage_wait_time(self):
         return numpy.average(self.waitting_times)
+
+    def plot_wait_time(self):
+        plt.hist(self.waitting_times, density=1, bins=30)
+        plt.xlabel('Tiempo de espera');
+        plt.show()
+
+    def get_max_wait_time(self):
+        return numpy.max(self.waitting_times)
+
+    def get_no_wait(self):
+        a = numpy.array(self.waitting_times)
+        unique, counts = numpy.unique(a, return_counts=True)
+        d = dict(zip(unique, counts))
+        return d.get(0)
+
+    def plot_queue_size(self):
+        plt.plot(*zip(*self.queue_sizes))
+        plt.xlabel('Time')
+        plt.ylabel('Queue size')
+        plt.show()
+
 
 
 
@@ -102,10 +125,20 @@ granja_option1 = Granja(env, 3, 1)
 print "seleccion inteligente"
 env.process(generate_requests(env,1000, granja_option1))
 env.run()
+print "all waitting time added %f " %(granja_option1.get_sum_wait_time())
 print "avarage wait time: %f" %(granja_option1.get_avarage_wait_time())
+print "max wait time: %f" %(granja_option1.get_max_wait_time())
+print "amount request that didn't had to wait: %f" %(granja_option1.get_no_wait())
+granja_option1.plot_wait_time()
+granja_option1.plot_queue_size()
 
 print "\nround robin"
 granja_option2 = Granja(env, 3, 2)
 env.process(generate_requests(env,1000, granja_option2))
 env.run()
+print "all waitting time added %f " %(granja_option2.get_sum_wait_time())
 print "avarage wait time: %f" %(granja_option2.get_avarage_wait_time())
+print "max wait time: %f" %(granja_option2.get_max_wait_time())
+print "amount request that didn't had to wait: %f" %(granja_option2.get_no_wait())
+granja_option1.plot_wait_time()
+granja_option2.plot_queue_size()
